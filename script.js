@@ -17,3 +17,42 @@ const choicesElement = document.getElementById('choices');
 const nextButton = document.getElementById('next');
 const timerElement = document.getElementById('time');
 const highscoresElement = document.getElementById('highscores');
+
+function showQuestion() {
+    const question = questions[currentQuestionIndex];
+    questionElement.textContent = question.question;
+    choicesElement.innerHTML = '';
+
+    question.answers.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.textContent = answer;
+        button.addEventListener('click', () => {
+            if (index === question.correct) {
+                correctAnswers++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        });
+        choicesElement.appendChild(button);
+    });
+}
+
+function startTimer() {
+    timerElement.textContent = timeRemaining;
+    const timer = setInterval(() => {
+        timeRemaining--;
+        timerElement.textContent = timeRemaining;
+
+        if (timeRemaining <= 0 || currentQuestionIndex >= questions.length) {
+            clearInterval(timer);
+            endQuiz();
+        }
+    }, 1000);
+}
+
+showQuestion();
+startTimer();
