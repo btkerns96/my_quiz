@@ -54,5 +54,40 @@ function startTimer() {
     }, 1000);
 }
 
+function endQuiz() {
+    saveHighScore(correctAnswers);
+    displayHighScores();
+    questionElement.textContent = "Quiz Completed!";
+    choicesElement.innerHTML = `Your score: ${correctAnswers}`;
+    nextButton.style.display = 'none';
+    timerElement.parentNode.style.display = 'none';
+}
+
+function saveHighScore(score) {
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+    const newScore = {
+        score: score,
+        date: new Date().toLocaleString()
+    };
+
+    highScores.push(newScore);
+    highScores.sort((a, b) => b.score - a.score);
+    highScores.splice(5); // Keeps only the top 5 scores
+
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+}
+
+function displayHighScores() {
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+    highscoresElement.innerHTML = '';
+
+    highScores.forEach(score => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${score.score} - ${score.date}`;
+        highscoresElement.appendChild(listItem);
+    });
+}
+
 showQuestion();
 startTimer();
+displayHighScores();
